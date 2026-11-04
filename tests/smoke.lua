@@ -76,9 +76,11 @@ stub("ui/network/manager", { runWhenOnline = function(_, cb) cb() end })
 local clock = 0
 stub("ui/time", { now = function() return clock end, to_s = function(t) return t end })
 local zmqs, standby, closed = {}, 0, {}
+local last_close_refresh
 stub("ui/uimanager", {
     show = function(_, w) table.insert(shown, w) end,
-    close = function(_, w)
+    close = function(_, w, refresh)
+        last_close_refresh = refresh
         table.insert(closed, w)
         if w and w.onCloseWidget then w:onCloseWidget() end
     end,
@@ -307,6 +309,7 @@ kindle = false
 eq(#executed == 4 and executed[1]:match("^iptables %-D") ~= nil, true, "firewall closed")
 eq(#zmqs .. " " .. standby, "0 0", "polling and standby released")
 eq(closed[#closed], screen, "screen closed")
+eq(last_close_refresh, "full", "screen below refreshed")
 
 -- Host: a guest leaving before the battle frees the seat ------------------------
 item("host").callback()

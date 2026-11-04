@@ -464,7 +464,8 @@ function Battleships.endGame()
     kindle_firewall("-D", game.rules)
     local screen = game.screen
     game = {}
-    if screen then UIManager:close(screen) end
+    -- the screen covers everything: without a refresh type the display would keep showing it
+    if screen then UIManager:close(screen, "full") end
 end
 
 --- The connection ended: `reason` = "left" (BYE), an ERRORS key, or a socket error.

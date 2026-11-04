@@ -131,27 +131,50 @@ function Board:randomize(rand)
     return false
 end
 
---- Moves ship i so that its top/left cell is (x, y). Returns true when it fits.
-function Board:move(i, x, y)
+-- Ship i placed with its top/left cell at x, y (moved back onto the board when
+-- the tap is near the edge) and `dir`; nil when it doesn't fit there.
+function Board:placed(i, x, y, dir)
     local ship = self.ships[i]
-    local moved = { x = x, y = y, len = ship.len, dir = ship.dir, hits = 0 }
-    -- keep the ship on the board when the tap is near the edge
+    local moved = { x = x, y = y, len = ship.len, dir = dir or ship.dir, hits = 0 }
     if moved.dir == "h" then moved.x = math.min(x, M.SIZE - moved.len)
     else moved.y = math.min(y, M.SIZE - moved.len) end
-    if not self:fits(moved, i) then return false end
+    if self:fits(moved, i) then return moved end
+end
+
+--- Moves ship i so that its top/left cell is (x, y). Returns true when it fits.
+function Board:move(i, x, y)
+    local moved = self:placed(i, x, y)
+    if not moved then return false end
     self.ships[i] = moved
     return true
+end
+
+--- Whether ship i can turn around its top/left cell.
+function Board:can_rotate(i)
+    local ship = self.ships[i]
+    return self:placed(i, ship.x, ship.y, ship.dir == "h" and "v" or "h") ~= nil
 end
 
 --- Rotates ship i around its top/left cell. Returns true when it fits.
 function Board:rotate(i)
     local ship = self.ships[i]
-    local turned = { x = ship.x, y = ship.y, len = ship.len, dir = ship.dir == "h" and "v" or "h", hits = 0 }
-    if turned.dir == "h" then turned.x = math.min(turned.x, M.SIZE - turned.len)
-    else turned.y = math.min(turned.y, M.SIZE - turned.len) end
-    if not self:fits(turned, i) then return false end
+    local turned = self:placed(i, ship.x, ship.y, ship.dir == "h" and "v" or "h")
+    if not turned then return false end
     self.ships[i] = turned
     return true
+end
+
+--- Water squares where tapping can't move ship i (it wouldn't fit):
+-- blocked[y][x] = true.
+function Board:blocked(i)
+    local blocked = {}
+    for y = 0, M.SIZE - 1 do
+        blocked[y] = {}
+        for x = 0, M.SIZE - 1 do
+            if not self:ship_at(x, y) and not self:placed(i, x, y) then blocked[y][x] = true end
+        end
+    end
+    return blocked
 end
 
 --- Whether the fleet is complete (all of M.FLEET placed).

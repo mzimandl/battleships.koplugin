@@ -8,7 +8,7 @@
 - Own modules must be required at load time from main.lua (PluginLoader only adds the plugin folder to package.path while main.lua loads).
 
 ## Modules
-- board.lua: Board (own ships + opponent's shots: shoot() → miss/hit/sunk/won), Target (what we know of the opponent's board; "near" = water around a sunk ship, auto-marked since ships may not touch). 0-based x/y, ship = { x, y, len, dir "h"/"v", hits }, wire form "x,y,len,dir".
+- board.lua: Board (own ships + opponent's shots: shoot() → miss/hit/sunk/won), Target (what we know of the opponent's board; "near" = water around a sunk ship, auto-marked since ships may not touch). 0-based x/y, ship = { x, y, len, dir "h"/"v", hits }, wire form "x,y,len,dir". Placing: placed(i, x, y, dir) is the one check behind move()/rotate()/can_rotate()/blocked() (squares shaded for the selected ship), so the shading always matches what a tap does.
 - protocol.lua: line format (documented at its top), Buffer for partial TCP reads, address parsing, discovery messages, ports.
 - match.lua: state machine of one match (phases placing → battle → over, rematch back to placing). receive(line) → event | nil | nil, error; local actions set_ready()/fire()/request_rematch(). The host sends START (random first player). Unknown commands are ignored, so new commands can be added without breaking older versions; changing the meaning of existing ones needs Protocol.VERSION + 1 (both sides refuse other versions).
 - net.lua: non-blocking Conn (out buffer for partial sends), Host (TCP listener + UDP discovery answers), Search (DISCOVER broadcasts to 255.255.255.255 and the /24 broadcast, games list with expiry).

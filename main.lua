@@ -125,7 +125,8 @@ end
 local font_sizes = {} -- cell size → label font size
 
 --- A 10 × 10 board with column letters and row numbers.
--- mode "own": board = Board (our ships and the opponent's shots), selected = ship index;
+-- mode "own": board = Board (our ships and the opponent's shots), selected = ship index
+-- (squares it can't be moved to are shaded);
 -- mode "target": target = Board.target(). last = { x, y } is outlined.
 -- on_tap(x, y) makes it tappable.
 local BoardWidget = InputContainer:extend{
@@ -143,6 +144,7 @@ function BoardWidget:init()
     self.cell = math.floor(self.size / n)
     self.dimen = Geom:new{ x = 0, y = 0, w = self.cell * n, h = self.cell * n }
     self.line = math.max(1, math.floor(self.cell / 25))
+    self.blocked = self.mode == "own" and self.selected and self.board:blocked(self.selected) or nil
     local fs = font_sizes[self.cell]
     if not fs then
         fs = TextWidget:getFontSizeToFitHeight("cfont", math.floor(self.cell * 0.75), 0)
@@ -188,6 +190,7 @@ function BoardWidget:paintCell(bb, px, py, x, y)
         bb:paintCircle(px + math.floor(c / 2), py + math.floor(c / 2), math.max(1, math.floor(r)), color)
     end
     if self.mode == "own" then
+        if self.blocked and self.blocked[y][x] then fill(Blitbuffer.COLOR_GRAY_D) end
         local i = self.board:ship_at(x, y)
         local shot = self.board.shots[y][x]
         if i then
@@ -266,7 +269,13 @@ function GameScreen:statusText()
         -- message says why
     elseif m.phase == "placing" then
         if not m.ready then
-            lines[#lines + 1] = _("Place your ships: tap a ship to select it, tap it again to turn it, tap the water to move it there.")
+            if not self.selected then
+                lines[#lines + 1] = _("Place your ships: tap a ship to select it, tap it again to turn it, tap the water to move it there.")
+            elseif game.match.board:can_rotate(self.selected) then
+                lines[#lines + 1] = _("Tap the water to move the ship, tap the ship to turn it. Shaded squares have no room for it.")
+            else
+                lines[#lines + 1] = _("Tap the water to move the ship. Shaded squares have no room for it, and it has no room to turn here.")
+            end
         elseif m.peer then
             lines[#lines + 1] = T(_("Waiting for %1 to place their ships…"), m.peer)
         end

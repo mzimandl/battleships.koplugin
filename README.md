@@ -12,11 +12,11 @@ Both devices must be on the same Wi-Fi network. In the menu: **Tools → Battles
 
 ### Rules
 - Each player has five ships (5, 4, 3, 3 and 2 squares) on a 10 × 10 board. Ships may not touch, not even at the corners.
-- Placing: the fleet starts at random positions (**Random** shuffles it again). Tap a ship to select it, tap it again to turn it, tap the water to move it there. **Ready** when done.
+- Placing: the fleet starts at random positions (**Random** shuffles it again). Tap a ship to select it, tap it again to turn it, tap the water to move it there. While a ship is selected, the squares it doesn't fit on are shaded, and the status line says when it has no room to turn. **Ready** when done.
 - The host's device picks who fires first. After a hit you fire again; after a miss it's the opponent's turn.
 - Water around a sunk ship is marked automatically. Whoever sinks the whole enemy fleet first wins; the loser then sees the winner's remaining ships. **Play again** starts a new round once both players tap it.
 
-Board marks: gray = ship, small dot = miss, black square = hit, black = sunk ship, light dot = water next to a sunk ship. The last shot is outlined.
+Board marks: gray = ship (dark gray = selected), light gray = no room for the selected ship, small dot = miss, black square = hit, black = sunk ship, light dot = water next to a sunk ship. The last shot is outlined.
 
 ## Network
 - TCP 7531 (the game, host), UDP 7532 (host answers searches), UDP 7533 (searching device listens for answers).

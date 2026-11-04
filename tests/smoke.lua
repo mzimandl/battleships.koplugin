@@ -249,6 +249,9 @@ local s1 = game_board.ships[1]
 local before = s1.dir
 screen:onOwnTap(s1.x, s1.y)
 eq(screen.selected, 1, "tap selects a ship")
+eq(boards(screen)[1].blocked ~= nil and paint(boards(screen)[1]) > 30, true, "squares without room computed and painted")
+local hint = screen:statusText()
+eq(hint:find("Shaded squares have no room", 1, true) ~= nil, true, "status explains the shading: " .. hint)
 screen:onOwnTap(s1.x, s1.y)
 local after = game_board.ships[1].dir
 eq(after ~= before or #toasts > 0, true, "second tap turns it (or explains why not)")

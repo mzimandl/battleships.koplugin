@@ -42,6 +42,10 @@ Obě zařízení musí být ve stejné síti Wi-Fi. Jeden hráč hru založí, d
     ["Your board"] = "Váš plán",
     ["Place your ships: tap a ship to select it, tap it again to turn it, tap the water to move it there."] =
         "Rozmístěte lodě: klepnutím loď vyberete, dalším klepnutím ji otočíte, klepnutím na vodu ji tam přesunete.",
+    ["Tap the water to move the ship, tap the ship to turn it. Shaded squares have no room for it."] =
+        "Klepnutím na vodu loď přesunete, klepnutím na loď ji otočíte. Na světle šedá pole se loď nevejde.",
+    ["Tap the water to move the ship. Shaded squares have no room for it, and it has no room to turn here."] =
+        "Klepnutím na vodu loď přesunete. Na světle šedá pole se loď nevejde a tady ji nelze otočit.",
     ["Waiting for %1 to place their ships…"] = "Čeká se, až %1 rozmístí lodě…",
     ["Waiting for an opponent. Your address: %1"] = "Čeká se na soupeře. Vaše adresa: %1",
     ["Waiting for an opponent."] = "Čeká se na soupeře.",

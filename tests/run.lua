@@ -61,6 +61,19 @@ eq(b:move(2, 7, 1), false, "can't move next to another ship")
 eq(Board.encode_ship(b.ships[2]), "7,9,3,h", "failed move leaves the ship")
 b.ships = { ship(0, 0, 4, "h"), ship(0, 2, 2, "h") }
 eq(b:rotate(1), false, "can't rotate onto another ship")
+eq(b:can_rotate(1), false, "no room to turn")
+eq(b:can_rotate(2), true, "room to turn")
+local blocked = b:blocked(2)
+eq(blocked[1][0], true, "next to another ship: no room")
+eq(blocked[0][4], true, "touching a ship's end: no room")
+eq(blocked[0][5], nil, "one square apart: room")
+eq(blocked[0][9], nil, "far enough: room")
+eq(blocked[0][0], nil, "ship squares are not shaded")
+eq(blocked[2][1], nil, "the moved ship's own squares count as free")
+eq(blocked[3][0] or blocked[3][5], nil, "row below is free")
+local n_blocked = 0
+for y = 0, 9 do for x = 0, 9 do if blocked[y][x] then n_blocked = n_blocked + 1 end end end
+eq(n_blocked, 6, "blocked: A2-E2 and E1")
 
 -- Board: shooting -------------------------------------------------------------
 b = Board.new()

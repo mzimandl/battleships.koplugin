@@ -8,11 +8,11 @@ address or by finding it on the local network (UDP broadcast).
 
 -- Own modules must be required at load time: PluginLoader only adds the
 -- plugin folder to package.path while main.lua is being loaded.
-local Board = require("battleships/board")
-local L10n = require("battleships/l10n")
-local Match = require("battleships/match")
-local Net = require("battleships/net")
-local Protocol = require("battleships/protocol")
+local Board = require("battleshipswifi/board")
+local L10n = require("battleshipswifi/l10n")
+local Match = require("battleshipswifi/match")
+local Net = require("battleshipswifi/net")
+local Protocol = require("battleshipswifi/protocol")
 
 local Blitbuffer = require("ffi/blitbuffer")
 local ButtonTable = require("ui/widget/buttontable")
@@ -45,15 +45,15 @@ local logger = require("logger")
 local time = require("ui/time")
 local gettext = require("gettext")
 -- The plugin's strings are not in KOReader's catalog: its own catalog for
--- KOReader's language first (battleships/l10n/<lang>.lua, required now, see above).
+-- KOReader's language first (battleshipswifi/l10n/<lang>.lua, required now, see above).
 local _ = L10n.wrap(gettext, L10n.catalog(gettext.current_lang, function(name)
-    local ok, catalog = pcall(require, "battleships/l10n/" .. name)
+    local ok, catalog = pcall(require, "battleshipswifi/l10n/" .. name)
     return ok and catalog or nil
 end))
 local T = require("ffi/util").template
 
 local Battleships = WidgetContainer:extend{
-    name = "battleships",
+    name = "battleshipswifi",
     is_doc_only = false,
 }
 
@@ -511,7 +511,7 @@ local INCOMING_TEXT = {
     won = _("%1 fired at %2: your last ship is sunk."),
 }
 
---- Updates the screen after a match event (see battleships/match.lua).
+--- Updates the screen after a match event (see battleshipswifi/match.lua).
 function Battleships.onGameEvent(ev)
     local m = game.match
     local t = ev.type
@@ -735,7 +735,14 @@ end
 -- Plugin -----------------------------------------------------------------------
 
 function Battleships:init()
-    self.settings = LuaSettings:open(DataStorage:getSettingsDir() .. "/battleships.lua")
+    self.settings = LuaSettings:open(DataStorage:getSettingsDir() .. "/battleshipswifi.lua")
+    if self.settings:readSetting("name") == nil then
+        -- before 0.2.0 the plugin was called battleships: keep the name and the last address
+        local old = LuaSettings:open(DataStorage:getSettingsDir() .. "/battleships.lua")
+        for _i, key in ipairs({ "name", "last_address" }) do
+            if old:readSetting(key) ~= nil then self.settings:saveSetting(key, old:readSetting(key)) end
+        end
+    end
     self.ui.menu:registerToMainMenu(self)
 end
 
@@ -778,21 +785,21 @@ end
 
 function Battleships:mainMenu()
     return {
-        { text = _("Host a game"), battleships_item = "host", callback = function() self:hostGame() end },
-        { text = _("Find a game"), battleships_item = "find", callback = function() self:findGames() end },
-        { text = _("Join by address…"), battleships_item = "join", callback = function() self:joinByAddress() end,
+        { text = _("Host a game"), battleshipswifi_item = "host", callback = function() self:hostGame() end },
+        { text = _("Find a game"), battleshipswifi_item = "find", callback = function() self:findGames() end },
+        { text = _("Join by address…"), battleshipswifi_item = "join", callback = function() self:joinByAddress() end,
             separator = true },
-        { text_func = function() return T(_("Your name: %1"), self:playerName()) end, battleships_item = "name",
+        { text_func = function() return T(_("Your name: %1"), self:playerName()) end, battleshipswifi_item = "name",
             keep_menu_open = true,
             callback = function(touchmenu_instance) self:editName(touchmenu_instance) end },
-        { text = _("Rules"), battleships_item = "rules", keep_menu_open = true,
+        { text = _("Rules"), battleshipswifi_item = "rules", keep_menu_open = true,
             callback = function() self:showRules() end },
     }
 end
 
 function Battleships:addToMainMenu(menu_items)
-    menu_items.battleships = {
-        text = _("Battleships"),
+    menu_items.battleshipswifi = {
+        text = _("Battleships (Wi-Fi)"),
         sorting_hint = "tools",
         sub_item_table_func = function() return self:mainMenu() end,
     }

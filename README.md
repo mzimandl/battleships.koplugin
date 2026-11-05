@@ -1,9 +1,9 @@
-# Battleships for KOReader
+# Battleships (Wi-Fi) for KOReader
 
-The classic Battleships game for two players, each on their own e-reader, over Wi-Fi. English, with a Czech translation (Lodě).
+The classic Battleships game for two players, each on their own e-reader, over Wi-Fi. English, with a Czech translation (Lodě). Installs as `battleshipswifi` (until 0.2.0 `battleships`: uninstall that one, the name you set is taken over).
 
 ## Playing
-Both devices must be on the same Wi-Fi network. In the menu: **Tools → Battleships**.
+Both devices must be on the same Wi-Fi network. In the menu: **Tools → Battleships (Wi-Fi)**.
 
 - **Host a game**: one player opens a game and places their ships right away. The screen shows the device's address.
 - **Find a game**: the other player sees games open on the local network (UDP broadcast) and taps one to join.

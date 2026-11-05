@@ -1,9 +1,9 @@
-# KOReader Battleships
-- Repo root is the plugin folder (battleships.koplugin). Pure-Lua modules in battleships/ must not require KOReader modules (testable off-device); net.lua gets LuaSocket passed in.
+# KOReader Battleships (Wi-Fi)
+- Repo root is the plugin folder (battleshipswifi.koplugin). Plugin id, folder and module are `battleshipswifi` since 0.2.0 (before: `battleships`, renamed like backgammonwifi.koplugin to stay clear of other plugins in ZenPM); init() copies name/last_address from the old battleships.lua settings once. Pure-Lua modules in battleshipswifi/ must not require KOReader modules (testable off-device); net.lua gets LuaSocket passed in.
 - Only main.lua touches KOReader APIs. Verify API names against koreader/koreader source before using them.
 - LuaJIT 2.1 / Lua 5.1: no utf8 library, no goto.
-- Tests: `luajit tests/run.lua` (board, protocol, two Match instances wired together, net with fake sockets, translations) and `luajit tests/smoke.lua` (main.lua against stubbed KOReader modules and a fake `socket`) must pass before finishing any change (`lua5.1` works too). smoke.lua finds menu items by their `battleships_item` field.
-- Translations: main.lua's `_` (battleships/l10n.lua) looks up battleships/l10n/<lang>.lua first. Every new `_("…")` needs an entry in battleships/l10n/cs.lua (run.lua checks both ways); _meta.lua keeps its Czech inline. Czech texts avoid past-tense verbs with a player name (gender unknown): "%1 odchází", "Vyhrává %1".
+- Tests: `luajit tests/run.lua` (board, protocol, two Match instances wired together, net with fake sockets, translations) and `luajit tests/smoke.lua` (main.lua against stubbed KOReader modules and a fake `socket`) must pass before finishing any change (`lua5.1` works too). smoke.lua finds menu items by their `battleshipswifi_item` field.
+- Translations: main.lua's `_` (battleshipswifi/l10n.lua) looks up battleshipswifi/l10n/<lang>.lua first. Every new `_("…")` needs an entry in battleshipswifi/l10n/cs.lua (run.lua checks both ways); _meta.lua keeps its Czech inline. Czech texts avoid past-tense verbs with a player name (gender unknown): "%1 odchází", "Vyhrává %1".
 - Distributed through ZenPM from mzimandl/koplugins (manifest.json, installs the master branch zip). ZenPM offers an update only when `version` in _meta.lua grows: bump it for every change that should reach devices. A push to master that changes _meta.lua asks koplugins to sync at once (.github/workflows/notify-koplugins.yml, secret KOPLUGINS_TOKEN).
 - Own modules must be required at load time from main.lua (PluginLoader only adds the plugin folder to package.path while main.lua loads).
 

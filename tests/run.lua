@@ -1,10 +1,10 @@
 -- Off-device tests. Run from the repo root:  luajit tests/run.lua
 package.path = "./?.lua;" .. package.path
 
-local Board = require("battleships/board")
-local Protocol = require("battleships/protocol")
-local Match = require("battleships/match")
-local Net = require("battleships/net")
+local Board = require("battleshipswifi/board")
+local Protocol = require("battleshipswifi/protocol")
+local Match = require("battleshipswifi/match")
+local Net = require("battleshipswifi/net")
 
 local passed, failed = 0, 0
 local function eq(actual, expected, name)
@@ -343,7 +343,7 @@ local function msgids(path)
     return ids
 end
 local used = msgids("main.lua")
-local cs = require("battleships/l10n/cs")
+local cs = require("battleshipswifi/l10n/cs")
 local missing, stale = {}, {}
 for id in pairs(used) do if not cs[id] then missing[#missing + 1] = id end end
 for id in pairs(cs) do if not used[id] then stale[#stale + 1] = id end end

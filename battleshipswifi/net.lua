@@ -5,7 +5,7 @@ Everything here is polled (main.lua polls from a UIManager ZMQ), nothing blocks
 except connect().
 ]]
 
-local Protocol = require("battleships/protocol")
+local Protocol = require("battleshipswifi/protocol")
 
 local M = {}
 

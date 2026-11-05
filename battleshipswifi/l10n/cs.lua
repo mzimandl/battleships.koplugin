@@ -1,8 +1,9 @@
--- Czech translation of the plugin's strings (msgid → translation), see battleships/l10n.lua.
+-- Czech translation of the plugin's strings (msgid → translation), see battleshipswifi/l10n.lua.
 -- tests/run.lua checks that every _("…") in main.lua has an entry here.
 return {
     -- menu
     ["Battleships"] = "Lodě",
+    ["Battleships (Wi-Fi)"] = "Lodě",
     ["Host a game"] = "Založit hru",
     ["Find a game"] = "Najít hru",
     ["Join by address…"] = "Připojit se podle adresy…",

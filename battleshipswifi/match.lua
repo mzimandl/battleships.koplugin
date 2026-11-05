@@ -13,8 +13,8 @@ Events: joined, peer_ready, start, incoming (opponent's shot), result (ours),
 fleet, rematch_request, rematch, left.
 ]]
 
-local Board = require("battleships/board")
-local Protocol = require("battleships/protocol")
+local Board = require("battleshipswifi/board")
+local Protocol = require("battleshipswifi/protocol")
 
 local M = {}
 

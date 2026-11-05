@@ -91,8 +91,10 @@ stub("ui/uimanager", {
     preventStandby = function() standby = standby + 1 end,
     allowStandby = function() standby = standby - 1 end,
 })
-stub("luasettings", { open = function()
-    local data = {}
+local stores = {} -- settings file → data
+stub("luasettings", { open = function(_, path)
+    stores[path] = stores[path] or {}
+    local data = stores[path]
     return {
         readSetting = function(_, k) return data[k] end,
         saveSetting = function(_, k, v) data[k] = v end,
@@ -199,10 +201,10 @@ local Battleships = dofile("main.lua")
 local plugin = Battleships:new{ ui = { menu = { registerToMainMenu = function() end } } }
 local menu_items = {}
 plugin:addToMainMenu(menu_items)
-eq(menu_items.battleships.text, "Battleships", "main menu entry")
+eq(menu_items.battleshipswifi.text, "Battleships (Wi-Fi)", "main menu entry")
 local function item(id)
-    for _i, it in ipairs(menu_items.battleships.sub_item_table_func()) do
-        if it.battleships_item == id then return it end
+    for _i, it in ipairs(menu_items.battleshipswifi.sub_item_table_func()) do
+        if it.battleshipswifi_item == id then return it end
     end
 end
 eq(item("name").text_func(), "Your name: Kindle Test", "default name is the device model")
@@ -406,6 +408,13 @@ eq(connect_to, "192.168.1.40:7531", "joins the game found")
 eq(#zmqs, 1, "only the game polled")
 plugin:onExit()
 eq(#zmqs .. " " .. standby, "0 0", "exit ends the game")
+
+-- Settings of the plugin's old name (battleships) are taken over once ---------------
+stores[root .. "/settings/battleshipswifi.lua"] = nil
+stores[root .. "/settings/battleships.lua"] = { name = "Old Name", last_address = "10.0.0.7" }
+local renamed = Battleships:new{ ui = { menu = { registerToMainMenu = function() end } } }
+eq(renamed:playerName(), "Old Name", "name taken over from battleships.lua")
+eq(renamed.settings:readSetting("last_address"), "10.0.0.7", "last address taken over")
 
 print(("%d passed, %d failed"):format(passed, failed))
 os.exit(failed == 0 and 0 or 1)
